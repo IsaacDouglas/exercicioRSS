@@ -27,8 +27,8 @@ Para entregar o exercício, responda o [formulário de entrega](#) até 20/05/20
 | Passo | Completou? |
 | ------ | ------ |
 | 1 | **sim** |
-| 2 | **não** |
-| 3 | **não** |
+| 2 | **sim** |
+| 3 | **sim** |
 | 4 | **não** |
 | 5 | **não** |
 | 6 | **não** |

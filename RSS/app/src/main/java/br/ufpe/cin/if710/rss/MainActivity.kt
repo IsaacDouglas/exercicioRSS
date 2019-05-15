@@ -1,6 +1,7 @@
 package br.ufpe.cin.if710.rss
 
 import android.app.Activity
+import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import java.io.ByteArrayOutputStream
@@ -31,16 +32,10 @@ class MainActivity : Activity() {
 
     override fun onStart() {
         super.onStart()
-        try {
-            //Esse código dá pau, por fazer operação de rede na thread principal...
-            val feedXML = getRssFeed(RSS_FEED)
-            conteudoRSS?.text = feedXML
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        val task = DownloadTask()
+        task.execute(RSS_FEED)
     }
 
-    //Opcional - pesquise outros meios de obter arquivos da internet - bibliotecas, etc.
     @Throws(IOException::class)
     private fun getRssFeed(feed: String): String {
         var input: InputStream? = null
@@ -51,11 +46,11 @@ class MainActivity : Activity() {
             input = conn.inputStream
             val out = ByteArrayOutputStream()
             val buffer = ByteArray(1024)
-            var count: Int
+            var count: Int = 0
 
             do {
-                count = input!!.read(buffer)
                 out.write(buffer, 0, count)
+                count = input!!.read(buffer)
             } while (count != -1)
 
             val response = out.toByteArray()
@@ -64,5 +59,24 @@ class MainActivity : Activity() {
             input?.close()
         }
         return rssFeed
+    }
+
+
+    internal inner class DownloadTask : AsyncTask<String, Int, String>() {
+
+        private var feedXML: String? = null
+
+        override fun doInBackground(vararg p0: String?): String? {
+            try {
+                feedXML = getRssFeed(RSS_FEED)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            return feedXML
+        }
+
+        override fun onPostExecute(aVoid: String) {
+            conteudoRSS?.text = feedXML
+        }
     }
 }
