@@ -36,6 +36,7 @@ class MainActivity : Activity() {
         task.execute(RSS_FEED)
     }
 
+    // Passo 1
     @Throws(IOException::class)
     private fun getRssFeed(feed: String): String {
         var input: InputStream? = null
@@ -61,7 +62,7 @@ class MainActivity : Activity() {
         return rssFeed
     }
 
-
+    // Passo 2 e 3 no Manifest
     internal inner class DownloadTask : AsyncTask<String, Int, String>() {
 
         private var feedXML: String? = null
@@ -77,6 +78,11 @@ class MainActivity : Activity() {
 
         override fun onPostExecute(aVoid: String) {
             conteudoRSS?.text = feedXML
+
+            // Passo 4
+            if (feedXML != null) {
+                val items = ParserRSS.parse(feedXML!!)
+            }
         }
     }
 }
