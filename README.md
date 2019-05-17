@@ -30,7 +30,7 @@ Para entregar o exercício, responda o [formulário de entrega](#) até 20/05/20
 | 2 | **sim** |
 | 3 | **sim** |
 | 4 | **sim** |
-| 5 | **não** |
-| 6 | **não** |
+| 5 | **sim** |
+| 6 | **sim** |
 | 7 | **não** |
 | 8 | **não** |

@@ -1,9 +1,20 @@
 package br.ufpe.cin.if710.rss
 
 import android.app.Activity
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item_feed.view.*
+import kotlinx.android.synthetic.main.itemlista.view.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -22,12 +33,10 @@ class MainActivity : Activity() {
     //http://pox.globo.com/rss/g1/tecnologia/
 
     //use ListView ao invés de TextView - deixe o atributo com o mesmo nome
-    private var conteudoRSS: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        conteudoRSS = findViewById(R.id.conteudoRSS)
     }
 
     override fun onStart() {
@@ -77,12 +86,57 @@ class MainActivity : Activity() {
         }
 
         override fun onPostExecute(aVoid: String) {
-            conteudoRSS?.text = feedXML
-
-            // Passo 4
             if (feedXML != null) {
+                // Passo 4
                 val items = ParserRSS.parse(feedXML!!)
+
+                // Passo 5
+                conteudoRSS.apply {
+                    layoutManager = LinearLayoutManager(applicationContext)
+                    adapter = ItemRSSAdapter(applicationContext, items)
+                    addItemDecoration(DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL))
+                }
             }
         }
     }
+
+
+    // Passo 6
+    internal inner class ItemRSSAdapter (
+            var c: Context,
+            var items: List<ItemRSS>) :  RecyclerView.Adapter<ItemRSSAdapter.ItemHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
+            val view = LayoutInflater.from(c).inflate(R.layout.item_feed, parent, false)
+            return ItemHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+            val item = items[position]
+            holder.titulo.text = item.title
+            holder.data.text = item.pubDate
+        }
+
+        override fun getItemCount(): Int {
+            return items.size
+        }
+
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+        internal inner class ItemHolder(val itemLista: View) : RecyclerView.ViewHolder(itemLista) {
+            val titulo: TextView = itemLista.item_titulo_feed
+            val data: TextView = itemLista.item_data_feed
+
+            init {
+                itemLista.setOnClickListener { _ ->
+                    Toast.makeText(titulo.context, data.text, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+
+
 }
