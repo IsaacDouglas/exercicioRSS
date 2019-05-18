@@ -2,6 +2,8 @@ package br.ufpe.cin.if710.rss
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -115,6 +117,7 @@ class MainActivity : Activity() {
             val item = items[position]
             holder.titulo.text = item.title
             holder.data.text = item.pubDate
+            holder.link = item.link
         }
 
         override fun getItemCount(): Int {
@@ -128,10 +131,14 @@ class MainActivity : Activity() {
         internal inner class ItemHolder(val itemLista: View) : RecyclerView.ViewHolder(itemLista) {
             val titulo: TextView = itemLista.item_titulo_feed
             val data: TextView = itemLista.item_data_feed
+            var link: String = ""
 
             init {
                 itemLista.setOnClickListener { _ ->
-                    Toast.makeText(titulo.context, data.text, Toast.LENGTH_LONG).show()
+                    // Passo 7
+                    val openURL = Intent(Intent.ACTION_VIEW)
+                    openURL.data = Uri.parse(link)
+                    startActivity(openURL)
                 }
             }
         }
