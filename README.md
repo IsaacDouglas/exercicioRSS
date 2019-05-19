@@ -32,5 +32,5 @@ Para entregar o exercício, responda o [formulário de entrega](#) até 20/05/20
 | 4 | **sim** |
 | 5 | **sim** |
 | 6 | **sim** |
-| 7 | **não** |
-| 8 | **não** |
+| 7 | **sim** |
+| 8 | **sim** |

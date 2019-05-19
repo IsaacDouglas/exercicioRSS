@@ -1,5 +1,6 @@
 package br.ufpe.cin.if710.rss
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -9,19 +10,18 @@ import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_feed.view.*
-import kotlinx.android.synthetic.main.itemlista.view.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import org.jetbrains.anko.defaultSharedPreferences
+
 
 class MainActivity : Activity() {
 
@@ -43,8 +43,15 @@ class MainActivity : Activity() {
 
     override fun onStart() {
         super.onStart()
+
+        // Passo 8
+        val rssDefault = resources.getString(R.string.rssfeed)
+        val key = SettingsActivity.RSSPreferenceFragment.RSS_FEED
+        val rssLink = defaultSharedPreferences.getString(key, rssDefault)
+
+
         val task = DownloadTask()
-        task.execute(RSS_FEED)
+        task.execute(rssLink)
     }
 
     // Passo 1
@@ -80,7 +87,7 @@ class MainActivity : Activity() {
 
         override fun doInBackground(vararg p0: String?): String? {
             try {
-                feedXML = getRssFeed(RSS_FEED)
+                feedXML = getRssFeed(p0[0]!!)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -89,14 +96,19 @@ class MainActivity : Activity() {
 
         override fun onPostExecute(aVoid: String) {
             if (feedXML != null) {
-                // Passo 4
-                val items = ParserRSS.parse(feedXML!!)
 
-                // Passo 5
-                conteudoRSS.apply {
-                    layoutManager = LinearLayoutManager(applicationContext)
-                    adapter = ItemRSSAdapter(applicationContext, items)
-                    addItemDecoration(DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL))
+                try {
+                    // Passo 4
+                    val items = ParserRSS.parse(feedXML!!)
+
+                    // Passo 5
+                    conteudoRSS.apply {
+                        layoutManager = LinearLayoutManager(applicationContext)
+                        adapter = ItemRSSAdapter(applicationContext, items)
+                        addItemDecoration(DividerItemDecoration(applicationContext, LinearLayoutManager.VERTICAL))
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(applicationContext, "Erro no Download!!!", Toast.LENGTH_LONG)
                 }
             }
         }
@@ -145,5 +157,21 @@ class MainActivity : Activity() {
     }
 
 
+    // Passo 8
+    @SuppressLint("ResourceType")
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.layout.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item?.itemId
+
+        if (id == R.id.action_settings) {
+            startActivity(Intent(applicationContext, SettingsActivity::class.java))
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
+
+

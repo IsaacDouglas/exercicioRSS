@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">RSS</string>
     <string name="rssfeed">http://leopoldomt.com/if1001/g1brasil.xml</string>
+
+    <string name="change">Modificar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="pref_title">Endereço do RSS</string>
+    <string name="pref_msg">Digite o novo endereço</string>
+    <string name="pref_desc">Endereço do RSS</string>
 </resources>
