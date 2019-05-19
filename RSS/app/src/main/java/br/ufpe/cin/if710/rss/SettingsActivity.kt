@@ -17,15 +17,17 @@ class SettingsActivity : Activity() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-
             addPreferencesFromResource(R.xml.preferencias)
 
+            // Pega o valor atual de RSS_FEED
             val preference = preferenceManager.findPreference(RSS_FEED)
 
+            // cria listener para atualizar summary ao modificar link do feed
             val mListener = SharedPreferences.OnSharedPreferenceChangeListener{ shared, _ ->
                 setText(preference, shared)
             }
 
+            // registra o listener no objeto SharedPreferences
             val shared = preferenceManager.sharedPreferences
             shared.registerOnSharedPreferenceChangeListener(mListener)
         }
@@ -37,7 +39,7 @@ class SettingsActivity : Activity() {
 
         override fun onResume() {
             super.onResume()
-
+            // Mostra o endereco atual salvo nas configuracoes
             val shared = preferenceManager.sharedPreferences
             val preference = preferenceManager.findPreference(RSS_FEED)
             setText(preference, shared)

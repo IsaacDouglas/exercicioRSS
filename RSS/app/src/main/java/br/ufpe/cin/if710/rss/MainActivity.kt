@@ -45,11 +45,12 @@ class MainActivity : Activity() {
         super.onStart()
 
         // Passo 8
+        // Recupera o endereco do RSS salvo nas configuracoes
         val rssDefault = resources.getString(R.string.rssfeed)
         val key = SettingsActivity.RSSPreferenceFragment.RSS_FEED
         val rssLink = defaultSharedPreferences.getString(key, rssDefault)
 
-
+        // Inicializa e executa o AsyncTask
         val task = DownloadTask()
         task.execute(rssLink)
     }
@@ -87,6 +88,7 @@ class MainActivity : Activity() {
 
         override fun doInBackground(vararg p0: String?): String? {
             try {
+                // Recupera o enderenco passado
                 feedXML = getRssFeed(p0[0]!!)
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -99,9 +101,11 @@ class MainActivity : Activity() {
 
                 try {
                     // Passo 4
+                    // Faz o parser do xml
                     val items = ParserRSS.parse(feedXML!!)
 
                     // Passo 5
+                    // Populando o RecyclerView com o ItemRSSAdapter
                     conteudoRSS.apply {
                         layoutManager = LinearLayoutManager(applicationContext)
                         adapter = ItemRSSAdapter(applicationContext, items)
@@ -146,6 +150,7 @@ class MainActivity : Activity() {
             var link: String = ""
 
             init {
+                // Pega o link do item e abre no navegador
                 itemLista.setOnClickListener { _ ->
                     // Passo 7
                     val openURL = Intent(Intent.ACTION_VIEW)
@@ -158,6 +163,7 @@ class MainActivity : Activity() {
 
 
     // Passo 8
+    // Monta o botao de configuracao
     @SuppressLint("ResourceType")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.layout.menu, menu)
@@ -167,6 +173,7 @@ class MainActivity : Activity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item?.itemId
 
+        // Identifica que apertou no botão e abre a tela de configuracao
         if (id == R.id.action_settings) {
             startActivity(Intent(applicationContext, SettingsActivity::class.java))
         }
